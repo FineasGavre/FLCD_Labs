@@ -1,0 +1,25 @@
+ENTER
+    LET max OF TYPE INT
+    LET num1 OF TYPE INT
+    LET num2 OF TYPE INT
+    LET num3 OF TYPE INT
+    OUTPUT "Enter first number"
+    INPUT num1
+    OUTPUT "Enter second number"
+    INPUT num2
+    OUTPUT "Enter third number"
+    INPUT num3
+    IF num1 > num2 THEN
+      IF num1 > num3 THEN
+        max = num1
+      ENDIF
+    ELSE
+      IF num2 > num3 THEN
+        max = num2
+      ELSE
+        max = num3
+      ENDIF
+    ENDIF
+    OUTPUT "The max number is"
+    OUTPUT max
+END
