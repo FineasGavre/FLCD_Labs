@@ -52,15 +52,15 @@ public class FiniteAutomaton {
         }
 
         for (var step : transitions) {
-            if (!states.contains(step.getP1())) {
+            if (!states.contains(step.getSource())) {
                 return false;
             }
 
-            if (!alphabet.contains(step.getP2())) {
+            if (!alphabet.contains(step.getRoute())) {
                 return false;
             }
 
-            for (var t : step.getTarget()) {
+            for (var t : step.getDestinations()) {
                 if (!states.contains(t)) {
                     return false;
                 }
@@ -70,9 +70,9 @@ public class FiniteAutomaton {
         return true;
     }
 
-    public boolean isDefinite() {
+    public boolean isDeterministic() {
         for (var transition : transitions) {
-            if (transition.getTarget().size() > 1) {
+            if (transition.getDestinations().size() > 1) {
                 return false;
             }
         }
@@ -81,7 +81,7 @@ public class FiniteAutomaton {
     }
 
     public boolean isAccepted(String sequence) {
-        if (!isDefinite()) return false;
+        if (!isDeterministic()) return false;
 
         if (sequence.length() == 0) {
             return finalStates.contains(initialState);
@@ -92,16 +92,19 @@ public class FiniteAutomaton {
             int finalI = i;
             String finalCurrentState = currentState;
             var transition = transitions.stream()
-                    .filter(t -> t.getP1().equals(finalCurrentState) && t.getP2().equals(String.valueOf(sequence.charAt(finalI))))
+                    .filter(t -> t.getSource().equals(finalCurrentState) && t.getRoute().equals(String.valueOf(sequence.charAt(finalI))))
                     .findFirst();
 
             if (transition.isPresent()) {
-                currentState = transition.get().getTarget().get(0);
+                currentState = transition.get().getDestinations().get(0);
+
+                if (i == sequence.length() - 1 && !finalStates.contains(currentState)) {
+                    return false;
+                }
             } else {
                 return false;
             }
         }
-
 
         return true;
     }
@@ -147,11 +150,14 @@ public class FiniteAutomaton {
 
                 var t = sLineParts[1];
 
-                var stepOpt = sList.stream().filter(s -> s.getP1().equals(p1) && s.getP2().equals(p2)).findFirst();
+                var stepOpt = sList.stream().filter(s -> s.getSource().equals(p1) && s.getRoute().equals(p2)).findFirst();
 
                 if (stepOpt.isPresent()) {
                     var step = stepOpt.get();
-                    step.addTarget(t);
+
+                    if (!step.getDestinations().contains(t)) {
+                        step.addTarget(t);
+                    }
                 } else {
                     var step = new Transition(p1, p2);
                     step.addTarget(t);

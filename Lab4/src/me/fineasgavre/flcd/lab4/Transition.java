@@ -4,46 +4,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Transition {
-    private String p1;
-    private String p2;
-    private List<String> target;
+    private String source;
+    private String route;
+    private final List<String> destinations;
 
-    Transition(String p1, String p2) {
-        this.p1 = p1;
-        this.p2 = p2;
-        this.target = new ArrayList<>();
+    Transition(String source, String route) {
+        this.source = source;
+        this.route = route;
+        this.destinations = new ArrayList<>();
     }
 
-    public String getP1() {
-        return p1;
+    public String getSource() {
+        return source;
     }
 
-    public void setP1(String p1) {
-        this.p1 = p1;
+    public void setSource(String source) {
+        this.source = source;
     }
 
-    public String getP2() {
-        return p2;
+    public String getRoute() {
+        return route;
     }
 
-    public void setP2(String p2) {
-        this.p2 = p2;
+    public void setRoute(String route) {
+        this.route = route;
     }
 
-    public List<String> getTarget() {
-        return target;
+    public List<String> getDestinations() {
+        return destinations;
     }
 
     public void addTarget(String target) {
-        this.target.add(target);
+        this.destinations.add(target);
     }
 
     @Override
     public String toString() {
-        return "Step{" +
-                "p1='" + p1 + '\'' +
-                ", p2='" + p2 + '\'' +
-                ", target='" + target + '\'' +
+        return "Transition{" +
+                "(" + source + ", " +
+                route + ") -> " +
+                destinations +
                 '}';
     }
 }

@@ -20,7 +20,7 @@ public class Main {
                 case 4 -> displayAlphabet();
                 case 5 -> displayTransitions();
                 case 6 -> displayFinalStates();
-                case 7 -> checkIfFiniteAutomatonIsDefinite();
+                case 7 -> checkIfFiniteAutomatonIsDeterministic();
                 case 8 -> checkIfFiniteAutomationSequenceIsAccepted();
                 case 9 -> System.exit(0);
             }
@@ -66,8 +66,8 @@ public class Main {
         System.out.println(finiteAutomaton.getFinalStates());
     }
 
-    private static void checkIfFiniteAutomatonIsDefinite() {
-        System.out.println(finiteAutomaton.isDefinite());
+    private static void checkIfFiniteAutomatonIsDeterministic() {
+        System.out.println(finiteAutomaton.isDeterministic());
     }
 
     private static void checkIfFiniteAutomationSequenceIsAccepted() {
