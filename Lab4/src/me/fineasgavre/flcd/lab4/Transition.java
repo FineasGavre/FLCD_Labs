@@ -3,12 +3,12 @@ package me.fineasgavre.flcd.lab4;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Step {
+public class Transition {
     private String p1;
     private String p2;
     private List<String> target;
 
-    Step(String p1, String p2) {
+    Transition(String p1, String p2) {
         this.p1 = p1;
         this.p2 = p2;
         this.target = new ArrayList<>();

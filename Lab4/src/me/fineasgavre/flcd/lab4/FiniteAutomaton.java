@@ -10,42 +10,58 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class FiniteAutomaton {
-    private List<String> q;
-    private List<String> e;
-    private List<String> f;
-    private List<Step> s;
-    private String q0;
+    private List<String> states;
+    private List<String> alphabet;
+    private List<String> finalStates;
+    private List<Transition> transitions;
+    private String initialState;
 
-    public FiniteAutomaton(List<String> q, List<String> e, List<String> f, List<Step> s, String q0) {
-        this.q = q;
-        this.e = e;
-        this.f = f;
-        this.s = s;
-        this.q0 = q0;
+    public FiniteAutomaton(List<String> q, List<String> e, List<String> f, List<Transition> s, String q0) {
+        this.states = q;
+        this.alphabet = e;
+        this.finalStates = f;
+        this.transitions = s;
+        this.initialState = q0;
+    }
+
+    public List<String> getStates() {
+        return states;
+    }
+
+    public List<String> getAlphabet() {
+        return alphabet;
+    }
+
+    public List<Transition> getTransitions() {
+        return transitions;
+    }
+
+    public List<String> getFinalStates() {
+        return finalStates;
     }
 
     public boolean checkIfValid() {
-        if (!q.contains(q0)) {
+        if (!states.contains(initialState)) {
             return false;
         }
 
-        for (var state : f) {
-            if (!q.contains(state)) {
+        for (var state : finalStates) {
+            if (!states.contains(state)) {
                 return false;
             }
         }
 
-        for (var step : s) {
-            if (!q.contains(step.getP1())) {
+        for (var step : transitions) {
+            if (!states.contains(step.getP1())) {
                 return false;
             }
 
-            if (!e.contains(step.getP2())) {
+            if (!alphabet.contains(step.getP2())) {
                 return false;
             }
 
             for (var t : step.getTarget()) {
-                if (!q.contains(t)) {
+                if (!states.contains(t)) {
                     return false;
                 }
             }
@@ -55,8 +71,8 @@ public class FiniteAutomaton {
     }
 
     public boolean isDefinite() {
-        for (var step : s) {
-            if (step.getTarget().size() > 1) {
+        for (var transition : transitions) {
+            if (transition.getTarget().size() > 1) {
                 return false;
             }
         }
@@ -64,21 +80,40 @@ public class FiniteAutomaton {
         return true;
     }
 
-    public boolean isAccepted() {
+    public boolean isAccepted(String sequence) {
         if (!isDefinite()) return false;
 
-        var currentState = q0;
+        if (sequence.length() == 0) {
+            return finalStates.contains(initialState);
+        }
+
+        var currentState = initialState;
+        for (int i = 0; i < sequence.length(); i++) {
+            int finalI = i;
+            String finalCurrentState = currentState;
+            var transition = transitions.stream()
+                    .filter(t -> t.getP1().equals(finalCurrentState) && t.getP2().equals(String.valueOf(sequence.charAt(finalI))))
+                    .findFirst();
+
+            if (transition.isPresent()) {
+                currentState = transition.get().getTarget().get(0);
+            } else {
+                return false;
+            }
+        }
+
+
         return true;
     }
 
     @Override
     public String toString() {
         return "FiniteAutomaton{" +
-                "q=" + q +
-                ", e=" + e +
-                ", f=" + f +
-                ", s=" + s +
-                ", q0='" + q0 + '\'' +
+                "q=" + states +
+                ", e=" + alphabet +
+                ", f=" + finalStates +
+                ", s=" + transitions +
+                ", q0='" + initialState + '\'' +
                 '}';
     }
 
@@ -88,7 +123,7 @@ public class FiniteAutomaton {
         List<String> qList = null;
         List<String> eList = null;
         List<String> fList = null;
-        List<Step> sList = new ArrayList<>();
+        List<Transition> sList = new ArrayList<>();
         String q0 = "";
 
         for (var line : lines) {
@@ -118,7 +153,7 @@ public class FiniteAutomaton {
                     var step = stepOpt.get();
                     step.addTarget(t);
                 } else {
-                    var step = new Step(p1, p2);
+                    var step = new Transition(p1, p2);
                     step.addTarget(t);
                     sList.add(step);
                 }
