@@ -1,0 +1,11 @@
+Non-Terminals
+S,A,B,C
+Terminals
+a,b,c
+Productions
+S->AB
+A->aS|cC
+B->bS|E
+C->aA|E
+Starting Symbol
+S
